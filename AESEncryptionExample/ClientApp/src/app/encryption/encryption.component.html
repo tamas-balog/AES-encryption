@@ -1,0 +1,105 @@
+<h1>AES encryption</h1>
+<form #inputForm="ngForm" (ngSubmit)="Submit()">
+    <div class="form-group">
+        <label>Text to encrypt: </label>
+        <input type="text" [(ngModel)]="text" [ngClass]="{'is-invalid':textField.errors && textField.touched}"
+            class="form-control col-md-6" name="text" #textField="ngModel" required>
+        <div [hidden]="!textField.errors?.required" class="invalid-feedback">
+            Text is required
+        </div>
+    </div>
+    <div class="form-group">
+        <label>Encrypition key: </label>
+        <input type="text" [(ngModel)]="encryptionKey"
+            [ngClass]="{'is-invalid':encryptionKeyField.errors && encryptionKeyField.touched}"
+            class="form-control col-md-4" name="encryptionKey" #encryptionKeyField="ngModel" required minlength="16"
+            maxlength="16">
+        <div [hidden]="!encryptionKeyField.errors?.required" class="invalid-feedback">
+            Encrypition key is required
+        </div>
+        <div [hidden]="!encryptionKeyField.errors?.minlength" class="invalid-feedback">
+            Encrypition key must be 16 characters long
+        </div>
+    </div>
+
+    <button class="btn btn-success mt-2" [disabled]="!inputForm.form.valid">Submit</button>
+</form>
+
+<div *ngIf="loaded">
+    <div class="row mx-0 mt-2">
+        <h2>Keys</h2>
+        <button class="btn btn-dark ml-3" (click)="Togglekeys()">
+            <i class="fix-btn fas fa-caret-down" *ngIf="keysToggled"></i>
+            <i class="fix-btn fas fa-caret-right" *ngIf="!keysToggled"></i>
+        </button>
+    </div>
+    <div class="text-center" *ngIf="keysToggled">
+        <table class="table-bordered m-auto">
+            <tr>
+                <th>Round</th>
+                <th>Key</th>
+            </tr>
+            <tr *ngFor="let key of keys; let i = index">
+                <td>{{i}}.</td>
+                <td>{{key}}</td>
+            </tr>
+        </table>
+    </div>
+    <div>
+        <h1> Encrypition</h1>
+        <div class="row">
+            <table class="table-bordered table-sm mx-auto"
+                *ngFor="let round of rounds[currentRoundEncryption + (currentEncryptionGroup * 11)][0].Matrixes">
+                <label>{{round.Header}}</label>
+                <tr *ngFor="let row of round.Matrix">
+                    <td class="text-center" *ngFor="let column of row">{{column}}</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <div class="row justify-content-center mt-5">
+        <button class="btn mr-1" (click)="StepEncryption(-1)"><i class="fas fa-caret-left"></i></button>
+        <span class="my-auto">{{currentRoundEncryption}} / 10</span>
+        <button class="btn ml-1" (click)="StepEncryption(+1)"><i class="fas fa-caret-right"></i></button>
+    </div>
+    <div class="text-center">
+        <label>Rounds</label>
+    </div>
+    <div class="row justify-content-center mt-1">
+        <button class="btn mr-1" (click)="StepEncryptionGroup(-1)"><i class="fas fa-caret-left"></i></button>
+        <span class="my-auto">{{currentEncryptionGroup + 1}} / {{encryptionGroup}}</span>
+        <button class="btn ml-1" (click)="StepEncryptionGroup(+1)"><i class="fas fa-caret-right"></i></button>
+    </div>
+    <div class="text-center">
+        <label>Groups</label>
+    </div>
+
+    <div>
+        <h1> Decrypition</h1>
+        <div class="row">
+            <table class="table-bordered table-sm mx-auto"
+                *ngFor="let round of invRounds[currentRoundDecryption + (currentDecryptionGroup * 11)][0].Matrixes">
+                <label>{{round.Header}}</label>
+                <tr *ngFor="let row of round.Matrix">
+                    <td class="text-center" *ngFor="let column of row">{{column}}</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <div class="row justify-content-center mt-5">
+        <button class="btn mr-1" (click)="StepDecryption(-1)"><i class="fas fa-caret-left"></i></button>
+        <span class="my-auto">{{currentRoundDecryption}} / 10</span>
+        <button class="btn ml-1" (click)="StepDecryption(+1)"><i class="fas fa-caret-right"></i></button>
+    </div>
+    <div class="text-center">
+        <label>Rounds</label>
+    </div>
+    <div class="row justify-content-center mt-1">
+        <button class="btn mr-1" (click)="StepDecryptionGroup(-1)"><i class="fas fa-caret-left"></i></button>
+        <span class="my-auto">{{currentDecryptionGroup + 1}} / {{decryptionGroup}}</span>
+        <button class="btn ml-1" (click)="StepDecryptionGroup(+1)"><i class="fas fa-caret-right"></i></button>
+    </div>
+    <div class="text-center">
+        <label>Groups</label>
+    </div>
+</div>

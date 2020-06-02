@@ -1,0 +1,15 @@
+.fix-btn {
+    min-width: 35px;
+}
+
+table {
+    position: relative;
+}
+
+table label {
+    all: none;
+    position: absolute;
+    bottom: -50px;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
